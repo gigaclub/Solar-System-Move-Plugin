@@ -1,53 +1,56 @@
 package net.gigaclub.solarsystemmoveplugin.helper;
 
 import java.io.*;
-import java.util.Map;
-import org.jnbt.ByteArrayTag;
-import org.jnbt.CompoundTag;
-import org.jnbt.NBTInputStream;
-import org.jnbt.ShortTag;
-import org.jnbt.Tag;
+
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import net.gigaclub.solarsystemmoveplugin.Main;
+import net.gigaclub.solarsystemmoveplugin.planets.Planet;
 
 public class importSchematics {
 
-    public static Schematic importSchematics(String path) {
+    public static Clipboard importSchematics(String path) {
 
-        if(path.contains(".schematic")) {
-            try {
-                File f = new File(path);
-                FileInputStream fis = new FileInputStream(f);
-                NBTInputStream nbt = new NBTInputStream(fis);
-                CompoundTag backuptag = (CompoundTag) nbt.readTag();
-                Map<String, Tag> tagCollection = backuptag.getValue();
-
-                short width = (Short)getChildTag(tagCollection, "Width", ShortTag.class).getValue();
-                short height = (Short) getChildTag(tagCollection, "Height", ShortTag.class).getValue();
-                short length = (Short) getChildTag(tagCollection, "Length", ShortTag.class).getValue();
-
-                byte[] blocks = (byte[]) getChildTag(tagCollection, "Blocks", ByteArrayTag.class).getValue();
-                byte[] data = (byte[]) getChildTag(tagCollection, "Data", ByteArrayTag.class).getValue();
-
-                nbt.close();
-                fis.close();
-
-                return new Schematic(blocks, data, width, length, height);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        File file = new File(path);
+        ClipboardFormat format = ClipboardFormats.findByFile(file);
+        try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
+            Clipboard clipboard = reader.read();
+            return clipboard;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return null;
 
     }
 
-    private static Tag getChildTag(Map<String, Tag> items, String key, Class<? extends Tag> expected) {
-        Tag tag = items.get(key);
-        return tag;
+    public static void writeSchematics() {
+        for(Planet planet : Main.planets) {
+            if(new File("/" + planet.getName() + "/" + planet.getName() + ".schem").exists()) {
+                planet.setSchematic(importSchematics(planet.getName() + ".schem"));
+            } else {
+                basicSchematic();
+            }
+        }
     }
 
-    public static Schematic basicSchematic() {
-        return new Schematic(1,1,1,1,1);
+    public static Clipboard basicSchematic() {
+        createDirectory("basic");
+        File file = new File("basic.schem");
+        ClipboardFormat format = ClipboardFormats.findByFile(file);
+        try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
+            Clipboard clipboard = reader.read();
+            return clipboard;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void createDirectory(String planetName) {
@@ -66,7 +69,7 @@ public class importSchematics {
             if(readMe.createNewFile()) {
                 FileWriter fw = new FileWriter(planetName + ".txt");
                 PrintWriter pw = new PrintWriter(fw);
-                pw.print("Bitte importiere eine " + planetName + ".schematic um einen Planet zu importieren!");
+                pw.print("Bitte importiere eine " + planetName + ".schem um einen Planet zu importieren!");
                 pw.close();
             }
         } catch (Exception e) {

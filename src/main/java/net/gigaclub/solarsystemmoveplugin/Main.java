@@ -11,7 +11,7 @@ public final class Main extends JavaPlugin {
 
     private Main plugin;
 
-    public ArrayList<Planet> planets;
+    public static ArrayList<Planet> planets;
 
     @Override
     public void onEnable() {

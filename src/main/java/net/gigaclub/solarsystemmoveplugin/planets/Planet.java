@@ -1,10 +1,10 @@
 package net.gigaclub.solarsystemmoveplugin.planets;
 
-import net.gigaclub.solarsystemmoveplugin.helper.Schematic;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
 
 public class Planet {
 
-    private Schematic schematic;
+    private Clipboard schematic;
     private double speed;
     private String name;
 
@@ -21,11 +21,11 @@ public class Planet {
         this.name = name;
     }
 
-    public Schematic getSchematic() {
+    public Clipboard getSchematic() {
         return schematic;
     }
 
-    public void setSchematic(Schematic schematic) {
+    public void setSchematic(Clipboard schematic) {
         this.schematic = schematic;
     }
 
