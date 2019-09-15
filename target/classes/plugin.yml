@@ -1,0 +1,10 @@
+name: Solar-System-Move-Plugin
+version: 1.0-SNAPSHOT
+main: net.gigaclub.solarsystemmoveplugin.Main
+api-version: 1.13
+authors: [GigaClub]
+website: https://GigaClub.net
+
+commands:
+  generateSolarSystem:
+    description: /generateSolarSystem

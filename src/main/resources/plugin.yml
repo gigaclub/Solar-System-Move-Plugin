@@ -1,6 +1,10 @@
-name: Net.GigaClub.SolarSystemMovePlugin
+name: Solar-System-Move-Plugin
 version: ${project.version}
 main: net.gigaclub.solarsystemmoveplugin.Main
 api-version: 1.13
 authors: [GigaClub]
 website: https://GigaClub.net
+
+commands:
+  generateSolarSystem:
+    description: /generateSolarSystem
